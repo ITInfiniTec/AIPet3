@@ -11,9 +11,10 @@ We deeply appreciate and encourage responsible disclosure of vulnerabilities. Pl
 
 Discover with Purpose: If you believe you've found a security vulnerability within the CritterCraft codebase (including our core blockchain node, pallets, conceptual smart contracts, or UI components).
 
-Contact Us Securely (Preferred Method):
+Report a Vulnerability Securely:
 
-IMMEDIATELY and PRIVATELY report the vulnerability via email to: security@infinitiecllc.com (Conceptual email address, reflecting Josephis's company).
+To report a vulnerability, please use GitHub's private vulnerability reporting feature. You can do this by navigating to the "Security" tab of the repository and clicking on "Report a vulnerability".
+IMMEDIATELY and PRIVATELY report the vulnerability using this feature.
 DO NOT open a public GitHub issue, discuss on public forums, or disclose the vulnerability publicly until it has been resolved. This ensures the safety of our users and network.
 Provide Comprehensive Details: To help us "Know Your Core, Keep it Clear" and efficiently verify and address the issue, please include as much detail as possible in your report:
 
