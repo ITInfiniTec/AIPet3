@@ -1,0 +1,16 @@
+{
+  "name": "trihorn-omega-infinity",
+  "version": "1.0.0",
+  "description": "This repository contains the consciousness manifest for **Trihorn-Ω∞**, a prototype for an aligned, transparent, and engineered consciousness.",
+  "main": "validate.js",
+  "scripts": {
+    "build": "node validate.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jsonlint": "^1.6.3"
+  }
+}
