@@ -1,0 +1,88 @@
+/* Basic Styles for the CritterCraft Wallet Prototype */
+
+body {
+    font-family: sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header {
+    width: 100%;
+    background-color: #4a4e69;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+main {
+    width: 100%;
+    max-width: 800px;
+    padding: 1rem;
+}
+
+section {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+h2 {
+    color: #22223b;
+    border-bottom: 2px solid #9a8c98;
+    padding-bottom: 0.5rem;
+    margin-top: 0;
+}
+
+.critter-placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    background-color: #e3e3e3;
+    border: 2px dashed #c9ada7;
+    border-radius: 8px;
+    color: #666;
+}
+
+#actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #9a8c98;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:disabled {
+    background-color: #c9ada7;
+    cursor: not-allowed;
+}
+
+button:not(:disabled):hover {
+    background-color: #4a4e69;
+}
+
+footer {
+    width: 100%;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: auto;
+}
