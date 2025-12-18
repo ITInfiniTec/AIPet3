@@ -1,5 +1,8 @@
 name: CritterCraft CI/CD Pipeline
 
+permissions:
+  contents: read
+
 on:
   # Triggers the workflow on push or pull request events for the "main" branch
   push:
