@@ -9,6 +9,9 @@ on:
   # Allows you to run this workflow manually from the Actions tab (for full pipeline runs)
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   # Job 1: Setup Shared Rust Environment & Cache
   setup_rust_env:
@@ -135,6 +138,8 @@ jobs:
   test_core_rust:
     name: Run Core Tests (Rust)
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs: [build_node] # Depends on a successful build
     steps:
       - name: Checkout Repository
