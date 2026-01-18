@@ -1,0 +1,4 @@
+## 2024-07-16 - CI/CD Supply-Chain Vulnerability
+**Vulnerability:** The GitHub Actions workflow file (`.github/workflows/CCCCP.yml`) used mutable tags (e.g., `actions/checkout@v4`) to define third-party actions.
+**Learning:** This is a significant supply-chain risk. If a tag is ever compromised or maliciously updated, the CI/CD pipeline could unknowingly execute compromised code, leading to secret exfiltration, data corruption, or further propagation of malware.
+**Prevention:** Always pin third-party GitHub Actions to their full, immutable commit SHAs. This ensures that the workflow executes the exact, audited version of the action every time, mitigating the risk of tag-based supply-chain attacks.
