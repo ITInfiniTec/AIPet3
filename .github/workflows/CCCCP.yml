@@ -20,12 +20,13 @@ jobs:
       # No need to pass toolchain directly via output, actions-rs/toolchain handles it globally
 
     steps:
+      # Pin actions to full-length commit SHAs to prevent supply-chain attacks via mutable tags.
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: Install Rust Toolchain (stable)
         # Uses specific Rust action for better integration and caching
-        uses: actions-rs/toolchain@v1
+        uses: actions-rs/toolchain@63eb9591781c46a70274cb3ebdf190fce92702e8
         with:
           toolchain: stable # Or specific version like 'nightly', '1.70.0'
           profile: minimal  # Install only necessary components for CI
@@ -33,7 +34,7 @@ jobs:
 
       - name: Cache Cargo Registry
         # Caches ~/.cargo/registry to speed up subsequent runs
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
         id: cache-cargo
         with:
           path: |
@@ -42,10 +43,10 @@ jobs:
           key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-registry-
-            
+
       - name: Cache Cargo Build Artifacts
         # Caches target directory to speed up builds and tests
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
         id: cache-cargo-build
         with:
           path: target
@@ -66,18 +67,18 @@ jobs:
     needs: [setup_rust_env] # This job depends on the environment setup passing
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       # Restore Rust environment and caches from setup_rust_env
       - name: Restore Rust Toolchain
-        uses: actions-rs/toolchain@v1
+        uses: actions-rs/toolchain@63eb9591781c46a70274cb3ebdf190fce92702e8
         with:
           toolchain: stable
           profile: minimal
           override: true
 
       - name: Restore Cargo Caches
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: |
             ~/.cargo/registry
@@ -87,11 +88,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-registry-
             ${{ runner.os }}-cargo-build-
-            
+
       - name: Run Rustfmt (Code Formatter Check)
         # --check-formatted ensures it's correctly formatted, --workspace includes all crates
         run: cargo fmt --all -- --check
-          
+
       - name: Run Clippy (Rust Linter)
         # --all-targets for thoroughness, -D warnings to treat warnings as errors for CI
         run: cargo clippy --all-targets -- -D warnings
@@ -103,18 +104,18 @@ jobs:
     needs: [lint_and_format_rust] # Depends on linting/formatting passing
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
-      
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+
       # Restore Rust environment and caches
       - name: Restore Rust Toolchain
-        uses: actions-rs/toolchain@v1
+        uses: actions-rs/toolchain@63eb9591781c46a70274cb3ebdf190fce92702e8
         with:
           toolchain: stable
           profile: minimal
           override: true
 
       - name: Restore Cargo Caches
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: |
             ~/.cargo/registry
@@ -130,7 +131,7 @@ jobs:
         # --locked ensures Cargo.lock is not modified, for repeatable builds
         # This is where our "unseen code" compiles into a functional binary.
         run: cargo build --release --locked --workspace # --workspace to build all crates
-      
+
   # Job 4: Run Core Unit & Integration Tests (Rust)
   test_core_rust:
     name: Run Core Tests (Rust)
@@ -138,18 +139,18 @@ jobs:
     needs: [build_node] # Depends on a successful build
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       # Restore Rust environment and caches
       - name: Restore Rust Toolchain
-        uses: actions-rs/toolchain@v1
+        uses: actions-rs/toolchain@63eb9591781c46a70274cb3ebdf190fce92702e8
         with:
           toolchain: stable
           profile: minimal
           override: true
 
       - name: Restore Cargo Caches
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: |
             ~/.cargo/registry
@@ -163,9 +164,9 @@ jobs:
       - name: Run All Rust Tests
         # --workspace to run tests across all crates in the workspace
         run: cargo test --workspace -- --nocapture # --nocapture to see print statements in logs
-        
+
       - name: Upload Test Results (e.g., to Codecov for coverage, or a test reporting tool)
-        uses: codecov/codecov-action@v4 # Example: for code coverage
+        uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # Example: for code coverage
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # Secret token for code coverage service
           fail_ci_if_error: true # Fail if coverage upload fails
@@ -177,18 +178,18 @@ jobs:
     needs: [build_node] # Can run in parallel with tests, but needs a successful build
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       # Restore Rust environment and caches
       - name: Restore Rust Toolchain
-        uses: actions-rs/toolchain@v1
+        uses: actions-rs/toolchain@63eb9591781c46a70274cb3ebdf190fce92702e8
         with:
           toolchain: stable
           profile: minimal
           override: true
 
       - name: Restore Cargo Caches
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: |
             ~/.cargo/registry
@@ -201,11 +202,11 @@ jobs:
 
       - name: Install cargo-audit
         run: cargo install cargo-audit
-          
+
       - name: Run cargo-audit
         # Audits project dependencies for known vulnerabilities
         run: cargo audit --deny warnings # Treat audit warnings as errors for CI
-        
+
   # Job 6: Build Conceptual Frontend UI (if applicable - based on ui-wallet/index.html implies a frontend)
   # This job would be for JavaScript/TypeScript frontends, not Rust.
   build_frontend_ui:
@@ -214,16 +215,16 @@ jobs:
     needs: [setup_rust_env] # Can run in parallel with Rust jobs, no direct dependency on Rust build
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20' # Or specific LTS version like '18.x'
           cache: 'yarn' # or 'npm' or 'pnpm'
       - name: Install Frontend Dependencies
         # Assuming frontend code is in a 'ui-wallet' directory
         run: yarn install # or npm install
-        working-directory: ./blockchain_core/ui-wallet 
+        working-directory: ./blockchain_core/ui-wallet
       - name: Build Frontend
         # 'yarn build' or 'npm run build' depending on your frontend setup
         run: yarn build # or npm run build
@@ -235,7 +236,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - name: Install Markdown Link Checker
         run: npm install -g markdown-link-check # Or other markdown linting tools
       - name: Check Markdown Links
@@ -254,7 +255,7 @@ jobs:
   #     url: 'https://testnet.crittercraft.com' # URL of your deployed testnet
   #   steps:
   #     - name: Checkout Repository
-  #       uses: actions/checkout@v4
+  #       uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
   #     - name: Deploy CritterCraft Node & Frontend
   #       # This step would involve commands to deploy the compiled node binary and frontend artifacts
   #       # e.g., using Docker, Kubernetes, or a specific cloud provider's CLI/GitHub Action
@@ -267,21 +268,3 @@ jobs:
   #         # kubectl apply -f k8s-testnet.yaml
   #         echo "Deployment commands would go here."
   # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
