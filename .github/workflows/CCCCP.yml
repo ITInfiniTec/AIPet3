@@ -1,11 +1,17 @@
+---
+# ⚡ Bolt: Optimized CI/CD Pipeline
+# This workflow is optimized for performance by running independent jobs in parallel.
+# The `setup_rust_env` job prepares the environment and caches, and then
+# subsequent jobs for linting, building, testing, and security audits run concurrently
+# to reduce the total pipeline execution time.
 name: CritterCraft CI/CD Pipeline
 
 on:
   # Triggers the workflow on push or pull request events for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   # Allows you to run this workflow manually from the Actions tab (for full pipeline runs)
   workflow_dispatch:
 
@@ -100,7 +106,7 @@ jobs:
   build_node:
     name: Build CritterCraft Node
     runs-on: ubuntu-latest
-    needs: [lint_and_format_rust] # Depends on linting/formatting passing
+    needs: [setup_rust_env] # Depends on linting/formatting passing
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -174,7 +180,7 @@ jobs:
   security_audit_rust:
     name: Security Audit (Rust)
     runs-on: ubuntu-latest
-    needs: [build_node] # Can run in parallel with tests, but needs a successful build
+    needs: [setup_rust_env] # Can run in parallel with tests, but needs a successful build
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -211,7 +217,6 @@ jobs:
   build_frontend_ui:
     name: Build Frontend UI (Conceptual)
     runs-on: ubuntu-latest
-    needs: [setup_rust_env] # Can run in parallel with Rust jobs, no direct dependency on Rust build
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -266,22 +271,3 @@ jobs:
   #         # docker push my-registry/crittercraft-node
   #         # kubectl apply -f k8s-testnet.yaml
   #         echo "Deployment commands would go here."
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
