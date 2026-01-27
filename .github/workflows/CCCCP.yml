@@ -100,7 +100,7 @@ jobs:
   build_node:
     name: Build CritterCraft Node
     runs-on: ubuntu-latest
-    needs: [lint_and_format_rust] # Depends on linting/formatting passing
+    needs: [setup_rust_env] # Depends on linting/formatting passing
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
