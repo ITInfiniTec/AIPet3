@@ -1,5 +1,7 @@
 name: CritterCraft CI/CD Pipeline
 
+permissions: read-all
+
 on:
   # Triggers the workflow on push or pull request events for the "main" branch
   push:
@@ -136,6 +138,9 @@ jobs:
     name: Run Core Tests (Rust)
     runs-on: ubuntu-latest
     needs: [build_node] # Depends on a successful build
+    permissions:
+      checks: write
+      pull-requests: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
