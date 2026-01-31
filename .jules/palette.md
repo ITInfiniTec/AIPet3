@@ -1,0 +1,3 @@
+## 2025-05-14 - Fulfilling Documentation Promises with Accessible Mockups
+**Learning:** In conceptual projects, the "user interface" often begins with the documentation. When a README promises a conceptual prototype that is missing, it creates a negative first-user experience. Providing a high-quality, accessible mockup fulfills this promise and sets a standard for future development.
+**Action:** Always verify if files mentioned in documentation as "available to view" actually exist. If missing, a micro-UX win is to provide an accessible, delightful placeholder that demonstrates the intended interaction.
