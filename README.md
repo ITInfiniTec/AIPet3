@@ -26,7 +26,7 @@ Security & Auditing Plan (SECURITY_PLAN.md): Details the comprehensive security 
 Community & Launch Strategy (LAUNCH_STRATEGY.md): Provides a high-level strategy for community building, token distribution (conceptual), a phased mainnet launch, and post-launch marketing.
 Conceptual UI Prototype:
 
-UI Wallet Mockup (blockchain_core/ui-wallet/index.html): An HTML file containing static mockups and placeholders for the CritterCraft UI wallet, demonstrating conceptual user flows for most features. (Note: This is a conceptual prototype, not a functional application).
+UI Wallet Mockup ([blockchain_core/ui-wallet/index.html](blockchain_core/ui-wallet/index.html)): An HTML file containing static mockups and placeholders for the CritterCraft UI wallet, demonstrating conceptual user flows for most features. (Note: This is a conceptual prototype, not a functional application).
 Pallet Code (Conceptual Outlines):
 
 The blockchain_core/pallets/ directory contains conceptual Substrate pallet code (lib.rs outlines) for:
