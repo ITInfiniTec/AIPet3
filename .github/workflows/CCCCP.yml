@@ -174,39 +174,19 @@ jobs:
   security_audit_rust:
     name: Security Audit (Rust)
     runs-on: ubuntu-latest
-    needs: [build_node] # Can run in parallel with tests, but needs a successful build
+    # Optimization: Runs in parallel with the build.
+    # Auditing only requires Cargo.lock and doesn't need a compiled node.
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Restore Rust environment and caches
-      - name: Restore Rust Toolchain
-        uses: actions-rs/toolchain@v1
+      - name: Run security audit
+        # Optimization: Use pre-compiled binary action (saves ~2-3 mins).
+        uses: rustsec/audit-check@v1.4.1
         with:
-          toolchain: stable
-          profile: minimal
-          override: true
+          token: ${{ github.token }}
 
-      - name: Restore Cargo Caches
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-registry-
-            ${{ runner.os }}-cargo-build-
-
-      - name: Install cargo-audit
-        run: cargo install cargo-audit
-          
-      - name: Run cargo-audit
-        # Audits project dependencies for known vulnerabilities
-        run: cargo audit --deny warnings # Treat audit warnings as errors for CI
-        
-  # Job 6: Build Conceptual Frontend UI (if applicable - based on ui-wallet/index.html implies a frontend)
+  # Job 6: Build Conceptual Frontend UI (if applicable)
   # This job would be for JavaScript/TypeScript frontends, not Rust.
   build_frontend_ui:
     name: Build Frontend UI (Conceptual)
@@ -266,22 +246,3 @@ jobs:
   #         # docker push my-registry/crittercraft-node
   #         # kubectl apply -f k8s-testnet.yaml
   #         echo "Deployment commands would go here."
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
