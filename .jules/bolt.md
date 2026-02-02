@@ -1,0 +1,3 @@
+## 2025-01-24 - [CI Performance Optimization]
+**Learning:** Manual installation of CLI tools in GitHub Actions (like `cargo install cargo-audit`) is a significant performance bottleneck. Using specialized actions that provide pre-compiled binaries or optimized environments (like `rustsec/audit-check`) can save minutes of execution time. Additionally, linearizing jobs that don't have hard dependencies (e.g., security audit needing a successful build) increases wall-clock time unnecessarily.
+**Action:** Always prefer specialized GitHub Actions for common tasks and parallelize jobs whenever possible to minimize the critical path of the CI pipeline.
