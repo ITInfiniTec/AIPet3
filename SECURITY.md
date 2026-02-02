@@ -13,7 +13,7 @@ Discover with Purpose: If you believe you've found a security vulnerability with
 
 Contact Us Securely (Preferred Method):
 
-IMMEDIATELY and PRIVATELY report the vulnerability via email to: security@infinitiecllc.com (Conceptual email address, reflecting Josephis's company).
+IMMEDIATELY and PRIVATELY report the vulnerability via email to: [security@infinitiecllc.com](mailto:security@infinitiecllc.com) (Conceptual email address, reflecting Josephis's company).
 DO NOT open a public GitHub issue, discuss on public forums, or disclose the vulnerability publicly until it has been resolved. This ensures the safety of our users and network.
 Provide Comprehensive Details: To help us "Know Your Core, Keep it Clear" and efficiently verify and address the issue, please include as much detail as possible in your report:
 
