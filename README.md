@@ -1,13 +1,21 @@
 # CritterCraft
+
 CritterCraft: An AI Pet Universe Forged on the Blockchain
+
 Welcome to the CritterCraft project! This repository contains the conceptual design, strategic planning documents, and UI mockups for a unique AI Giga Pet / Tamagotchi-style application built on a custom Substrate-based blockchain (CritterChain).
 
-Project Vision
+## 📋 Table of Contents
+- [Project Vision](#project-vision)
+- [Project Documentation Structure](#project-documentation-structure)
+- [Current Status](#current-status)
+- [Navigating the Project](#navigating-the-project)
+
+## Project Vision
 CritterCraft aims to create a universe where digital companions are intelligent beings with unique personalities, moods, and growth journeys. Their existence, attributes, and achievements are immutably recorded on a decentralized ledger. Players cultivate these AI pets, guide their development, engage them in competitive Pokémon-esque battles, send them on Neopets-style quests, and participate in a rich, player-driven economy.
 
 The ecosystem is designed to allow users to earn real value through various activities including starting shops, taking on blockchain support jobs, participating in network consensus (PoS/DPoS), voting on the network's future, engaging in competitive gameplay, and much more, all underpinned by blockchain technology.
 
-Project Documentation Structure
+## Project Documentation Structure
 This repository serves as a comprehensive blueprint for the CritterCraft project. The key design, strategy, and conceptual documents are organized as follows:
 
 Core Design & Feature Outlines:
@@ -35,10 +43,19 @@ pallet-marketplace (NFT buying/selling)
 pallet-battles (Pet battle registration & outcome reporting)
 pallet-quests (Quest management & completion)
 pallet-breeding (Conceptual outline for pet breeding)
-Current Status
-This project is currently in the advanced conceptual design and strategic planning phase. The documents and UI mockups represent a detailed blueprint for future development. No live network or fully implemented pallets exist based solely on this repository's current state.
+## Current Status
+This project is currently in the advanced conceptual design and strategic planning phase.
 
-Navigating the Project
+**Progress: [████░░░░░░] 40%**
+
+- [x] Conceptual Design & Strategy
+- [x] Documentation & Architecture
+- [ ] Substrate Pallet Implementation
+- [ ] UI Wallet Prototype
+
+The documents and UI mockups represent a detailed blueprint for future development. No live network or fully implemented pallets exist based solely on this repository's current state.
+
+## Navigating the Project
 Start with this README.md to understand the document structure.
 Explore the linked markdown files for detailed information on specific aspects of the project.
 Review the conceptual pallet outlines in the blockchain_core/pallets/ directory.
