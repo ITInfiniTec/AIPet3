@@ -1,13 +1,16 @@
+---
 name: CritterCraft CI/CD Pipeline
 
-on:
+"on":
   # Triggers the workflow on push or pull request events for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   # Allows you to run this workflow manually from the Actions tab (for full pipeline runs)
   workflow_dispatch:
+
+permissions: read-all
 
 jobs:
   # Job 1: Setup Shared Rust Environment & Cache
@@ -136,6 +139,9 @@ jobs:
     name: Run Core Tests (Rust)
     runs-on: ubuntu-latest
     needs: [build_node] # Depends on a successful build
+    permissions:
+      contents: read
+      checks: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -174,37 +180,18 @@ jobs:
   security_audit_rust:
     name: Security Audit (Rust)
     runs-on: ubuntu-latest
-    needs: [build_node] # Can run in parallel with tests, but needs a successful build
+    permissions:
+      contents: read
+      checks: write # Required for posting audit results
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Restore Rust environment and caches
-      - name: Restore Rust Toolchain
-        uses: actions-rs/toolchain@v1
+      - name: Run Security Audit (Rust)
+        # Using rustsec/audit-check for better security and performance
+        uses: rustsec/audit-check@v2.0.0
         with:
-          toolchain: stable
-          profile: minimal
-          override: true
-
-      - name: Restore Cargo Caches
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-registry-
-            ${{ runner.os }}-cargo-build-
-
-      - name: Install cargo-audit
-        run: cargo install cargo-audit
-          
-      - name: Run cargo-audit
-        # Audits project dependencies for known vulnerabilities
-        run: cargo audit --deny warnings # Treat audit warnings as errors for CI
+          token: ${{ secrets.GITHUB_TOKEN }}
         
   # Job 6: Build Conceptual Frontend UI (if applicable - based on ui-wallet/index.html implies a frontend)
   # This job would be for JavaScript/TypeScript frontends, not Rust.
@@ -266,22 +253,3 @@ jobs:
   #         # docker push my-registry/crittercraft-node
   #         # kubectl apply -f k8s-testnet.yaml
   #         echo "Deployment commands would go here."
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
