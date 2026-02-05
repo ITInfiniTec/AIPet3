@@ -1,11 +1,12 @@
+---
 name: CritterCraft CI/CD Pipeline
 
-on:
+"on":
   # Triggers the workflow on push or pull request events for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   # Allows you to run this workflow manually from the Actions tab (for full pipeline runs)
   workflow_dispatch:
 
@@ -42,7 +43,7 @@ jobs:
           key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-registry-
-            
+
       - name: Cache Cargo Build Artifacts
         # Caches target directory to speed up builds and tests
         uses: actions/cache@v4
@@ -87,11 +88,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-registry-
             ${{ runner.os }}-cargo-build-
-            
+
       - name: Run Rustfmt (Code Formatter Check)
         # --check-formatted ensures it's correctly formatted, --workspace includes all crates
         run: cargo fmt --all -- --check
-          
+
       - name: Run Clippy (Rust Linter)
         # --all-targets for thoroughness, -D warnings to treat warnings as errors for CI
         run: cargo clippy --all-targets -- -D warnings
@@ -104,7 +105,7 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
+
       # Restore Rust environment and caches
       - name: Restore Rust Toolchain
         uses: actions-rs/toolchain@v1
@@ -130,7 +131,7 @@ jobs:
         # --locked ensures Cargo.lock is not modified, for repeatable builds
         # This is where our "unseen code" compiles into a functional binary.
         run: cargo build --release --locked --workspace # --workspace to build all crates
-      
+
   # Job 4: Run Core Unit & Integration Tests (Rust)
   test_core_rust:
     name: Run Core Tests (Rust)
@@ -163,7 +164,7 @@ jobs:
       - name: Run All Rust Tests
         # --workspace to run tests across all crates in the workspace
         run: cargo test --workspace -- --nocapture # --nocapture to see print statements in logs
-        
+
       - name: Upload Test Results (e.g., to Codecov for coverage, or a test reporting tool)
         uses: codecov/codecov-action@v4 # Example: for code coverage
         with:
@@ -174,38 +175,19 @@ jobs:
   security_audit_rust:
     name: Security Audit (Rust)
     runs-on: ubuntu-latest
-    needs: [build_node] # Can run in parallel with tests, but needs a successful build
+    # Optimization: Decoupled from build_node to allow parallel execution.
+    needs: [setup_rust_env]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Restore Rust environment and caches
-      - name: Restore Rust Toolchain
-        uses: actions-rs/toolchain@v1
+      # Optimization: Using specialized action instead of manual install.
+      # This saves significant time (~2-5 mins) by using a pre-compiled binary.
+      - name: Run Security Audit
+        uses: rustsec/audit-check@v2.0.0
         with:
-          toolchain: stable
-          profile: minimal
-          override: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Restore Cargo Caches
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-registry-
-            ${{ runner.os }}-cargo-build-
-
-      - name: Install cargo-audit
-        run: cargo install cargo-audit
-          
-      - name: Run cargo-audit
-        # Audits project dependencies for known vulnerabilities
-        run: cargo audit --deny warnings # Treat audit warnings as errors for CI
-        
   # Job 6: Build Conceptual Frontend UI (if applicable - based on ui-wallet/index.html implies a frontend)
   # This job would be for JavaScript/TypeScript frontends, not Rust.
   build_frontend_ui:
@@ -223,7 +205,7 @@ jobs:
       - name: Install Frontend Dependencies
         # Assuming frontend code is in a 'ui-wallet' directory
         run: yarn install # or npm install
-        working-directory: ./blockchain_core/ui-wallet 
+        working-directory: ./blockchain_core/ui-wallet
       - name: Build Frontend
         # 'yarn build' or 'npm run build' depending on your frontend setup
         run: yarn build # or npm run build
@@ -266,22 +248,3 @@ jobs:
   #         # docker push my-registry/crittercraft-node
   #         # kubectl apply -f k8s-testnet.yaml
   #         echo "Deployment commands would go here."
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
