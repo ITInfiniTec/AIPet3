@@ -1,11 +1,13 @@
 name: CritterCraft CI/CD Pipeline
 
-on:
+permissions: read-all
+
+"on":
   # Triggers the workflow on push or pull request events for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   # Allows you to run this workflow manually from the Actions tab (for full pipeline runs)
   workflow_dispatch:
 
@@ -43,17 +45,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-registry-
             
-      - name: Cache Cargo Build Artifacts
-        # Caches target directory to speed up builds and tests
-        uses: actions/cache@v4
-        id: cache-cargo-build
-        with:
-          path: target
-          # Key depends on OS, Rust toolchain, and Cargo.lock changes
-          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-build-
-
       - name: Install Rustfmt & Clippy (for linting/formatting job)
         run: |
           rustup component add rustfmt --toolchain stable
@@ -174,59 +165,42 @@ jobs:
   security_audit_rust:
     name: Security Audit (Rust)
     runs-on: ubuntu-latest
-    needs: [build_node] # Can run in parallel with tests, but needs a successful build
+    permissions:
+      contents: read
+      checks: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Restore Rust environment and caches
-      - name: Restore Rust Toolchain
-        uses: actions-rs/toolchain@v1
+      - name: Run Security Audit
+        uses: rustsec/audit-check@v2.0.0
         with:
-          toolchain: stable
-          profile: minimal
-          override: true
-
-      - name: Restore Cargo Caches
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-registry-
-            ${{ runner.os }}-cargo-build-
-
-      - name: Install cargo-audit
-        run: cargo install cargo-audit
-          
-      - name: Run cargo-audit
-        # Audits project dependencies for known vulnerabilities
-        run: cargo audit --deny warnings # Treat audit warnings as errors for CI
+          token: ${{ secrets.GITHUB_TOKEN }}
         
   # Job 6: Build Conceptual Frontend UI (if applicable - based on ui-wallet/index.html implies a frontend)
   # This job would be for JavaScript/TypeScript frontends, not Rust.
   build_frontend_ui:
     name: Build Frontend UI (Conceptual)
     runs-on: ubuntu-latest
-    needs: [setup_rust_env] # Can run in parallel with Rust jobs, no direct dependency on Rust build
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Or specific LTS version like '18.x'
-          cache: 'yarn' # or 'npm' or 'pnpm'
+          node-version: '20'
+          cache: 'pnpm'
       - name: Install Frontend Dependencies
         # Assuming frontend code is in a 'ui-wallet' directory
-        run: yarn install # or npm install
-        working-directory: ./blockchain_core/ui-wallet 
+        run: pnpm install
+        working-directory: ./blockchain_core/ui-wallet
       - name: Build Frontend
-        # 'yarn build' or 'npm run build' depending on your frontend setup
-        run: yarn build # or npm run build
+        # 'pnpm run build' depending on your frontend setup
+        run: pnpm run build
         working-directory: ./blockchain_core/ui-wallet
 
   # Job 7: Check Documentation Integrity (for markdown files)
@@ -236,12 +210,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Install Markdown Link Checker
-        run: npm install -g markdown-link-check # Or other markdown linting tools
       - name: Check Markdown Links
-        # Checks for broken links in .md files
-        run: find . -name "*.md" -print0 | xargs -0 -I{} markdown-link-check {} # Basic check
-        # This is a basic example; for more advanced checks, dedicated actions/tools exist.
+        # Use npx for zero-setup execution of the link checker
+        run: find . -name "*.md" -print0 | xargs -0 -I{} npx markdown-link-check {}
 
   # Job 8 (Conceptual for full CI/CD): Deploy to Testnet/Staging
   # deploy_testnet:
@@ -266,22 +237,3 @@ jobs:
   #         # docker push my-registry/crittercraft-node
   #         # kubectl apply -f k8s-testnet.yaml
   #         echo "Deployment commands would go here."
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.

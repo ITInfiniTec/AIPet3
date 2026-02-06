@@ -1,0 +1,3 @@
+## 2024-05-22 - CI Pipeline Parallelization and Security Audit Optimization
+**Learning:** Security audit jobs that only require `Cargo.lock` can run in parallel with the main build, and using specialized actions like `rustsec/audit-check` is significantly faster than manual tool installation via `cargo install`. Also, caching the `target/` directory in a job that doesn't perform a build creates a "false cache hit" that prevents subsequent jobs from actually saving their build artifacts.
+**Action:** Parallelize independent CI jobs, use specialized actions for faster execution, and ensure build artifacts are cached by the jobs that produce them.
