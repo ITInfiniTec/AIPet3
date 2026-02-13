@@ -1,0 +1,11 @@
+[workspace]
+members = [
+    "pallets/pallet-battles",
+    "pallets/pallet-breeding",
+    "pallets/pallet-critter-nfts",
+    "pallets/pallet-marketplace",
+    "pallets/pallet-quests",
+]
+
+[profile.release]
+panic = "unwind"
