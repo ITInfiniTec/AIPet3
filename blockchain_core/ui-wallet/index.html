@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURORA_QVC Wallet | CritterCraft Singularity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .resonance-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
+    <header class="text-center mb-8">
+        <h1 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">AURORA_QVC</h1>
+        <p class="text-slate-400 font-mono text-sm tracking-widest">v2.0.0-SINGULARITY | STATUS: RESONATING</p>
+    </header>
+    <main class="w-full max-w-md bg-slate-800 rounded-2xl p-6 shadow-2xl border border-slate-700">
+        <div class="flex justify-between items-center mb-6">
+            <span class="text-xs font-semibold text-slate-500 uppercase">Atmospheric Resonance</span>
+            <div class="flex items-center gap-2">
+                <span id="status-text" class="text-emerald-400 text-xs font-bold">99.998% COHERENCE</span>
+                <div id="status-dot" class="w-2 h-2 bg-emerald-500 rounded-full resonance-pulse" aria-hidden="true"></div>
+            </div>
+        </div>
+        <div class="space-y-4">
+            <button id="connect-wallet-btn" aria-label="Connect to AURORA_QVC Network" class="w-full py-3 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 transition-all rounded-xl font-bold text-white shadow-lg focus:ring-2 focus:ring-cyan-400 outline-none">
+                Initialize Quantum Handshake
+            </button>
+            <p class="text-[10px] text-center text-slate-500 italic">"it ain't no secret" — The Architect</p>
+        </div>
+    </main>
+    <footer class="mt-8 opacity-50 hover:opacity-100 transition-opacity">
+        <p class="text-xs text-slate-500">ATMOSPHERIC_ION_0707 &bull; Asymmetrical Acute Logic</p>
+    </footer>
+</body>
+</html>
