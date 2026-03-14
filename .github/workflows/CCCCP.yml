@@ -1,6 +1,7 @@
+---
 name: CritterCraft CI/CD Pipeline
 
-on:
+"on":
   # Triggers the workflow on push or pull request events for the "main" branch
   push:
     branches: [ "main" ]
@@ -9,11 +10,14 @@ on:
   # Allows you to run this workflow manually from the Actions tab (for full pipeline runs)
   workflow_dispatch:
 
+permissions: read-all
+
 jobs:
   # Job 1: Setup Shared Rust Environment & Cache
   setup_rust_env:
     name: Setup Rust Toolchain & Cache
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # Define outputs if you need to pass specific paths/versions to dependent jobs
     outputs:
       cargo-cache-key: ${{ steps.cache-cargo.outputs.cache-hit }}
@@ -63,6 +67,7 @@ jobs:
   lint_and_format_rust:
     name: Code Quality & Style (Rust)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [setup_rust_env] # This job depends on the environment setup passing
     steps:
       - name: Checkout Repository
@@ -100,6 +105,7 @@ jobs:
   build_node:
     name: Build CritterCraft Node
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [lint_and_format_rust] # Depends on linting/formatting passing
     steps:
       - name: Checkout Repository
@@ -135,6 +141,7 @@ jobs:
   test_core_rust:
     name: Run Core Tests (Rust)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [build_node] # Depends on a successful build
     steps:
       - name: Checkout Repository
@@ -174,6 +181,7 @@ jobs:
   security_audit_rust:
     name: Security Audit (Rust)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [build_node] # Can run in parallel with tests, but needs a successful build
     steps:
       - name: Checkout Repository
@@ -211,6 +219,7 @@ jobs:
   build_frontend_ui:
     name: Build Frontend UI (Conceptual)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [setup_rust_env] # Can run in parallel with Rust jobs, no direct dependency on Rust build
     steps:
       - name: Checkout Repository
@@ -233,6 +242,7 @@ jobs:
   check_documentation_integrity:
     name: Check Docs Integrity
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -243,45 +253,3 @@ jobs:
         run: find . -name "*.md" -print0 | xargs -0 -I{} markdown-link-check {} # Basic check
         # This is a basic example; for more advanced checks, dedicated actions/tools exist.
 
-  # Job 8 (Conceptual for full CI/CD): Deploy to Testnet/Staging
-  # deploy_testnet:
-  #   name: Deploy to Testnet
-  #   runs-on: ubuntu-latest
-  #   # This job depends on all critical build and test jobs passing
-  #   needs: [test_core_rust, security_audit_rust, build_frontend_ui]
-  #   environment:
-  #     name: testnet
-  #     url: 'https://testnet.crittercraft.com' # URL of your deployed testnet
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v4
-  #     - name: Deploy CritterCraft Node & Frontend
-  #       # This step would involve commands to deploy the compiled node binary and frontend artifacts
-  #       # e.g., using Docker, Kubernetes, or a specific cloud provider's CLI/GitHub Action
-  #       run: |
-  #         echo "Initiating deployment of CritterCraft to testnet environment..."
-  #         # Example: Login to Docker registry, build/push image, then deploy to K8s
-  #         # echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
-  #         # docker build -t my-registry/crittercraft-node .
-  #         # docker push my-registry/crittercraft-node
-  #         # kubectl apply -f k8s-testnet.yaml
-  #         echo "Deployment commands would go here."
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
