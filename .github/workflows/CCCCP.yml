@@ -213,8 +213,31 @@ jobs:
       - name: Run cargo-audit
         # Audits project dependencies for known vulnerabilities
         run: cargo audit --deny warnings # Treat audit warnings as errors for CI
+
+  # Job 6: OSSF Scorecard Security Analysis
+  scorecard:
+    name: OSSF Scorecard Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      id-token: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          # We must fetch at least the last 100 commits for accurate changelog analysis.
+          fetch-depth: 100
+
+      - name: Run OSSF Scorecard
+        uses: ossf/scorecard-action@v2
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          # Publish the results to the repo's security dashboard.
+          publish_results: true
         
-  # Job 6: Build Conceptual Frontend UI (if applicable - based on ui-wallet/index.html implies a frontend)
+  # Job 7: Build Conceptual Frontend UI (if applicable - based on ui-wallet/index.html implies a frontend)
   # This job would be for JavaScript/TypeScript frontends, not Rust.
   build_frontend_ui:
     name: Build Frontend UI (Conceptual)
