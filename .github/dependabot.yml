@@ -30,7 +30,7 @@ updates:
   # Uncomment and adjust if you have a frontend directory with package.json
   # For example, if your UI wallet is in `blockchain_core/ui-wallet`
   - package-ecosystem: "npm" # Or "yarn" if you use Yarn
-    directory: "/blockchain_core/ui-wallet" # Location of package.json/yarn.lock
+    directory: "/" # Location of package.json/yarn.lock
     schedule:
       interval: "weekly" # Check for updates weekly
       day: "monday"
